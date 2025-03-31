@@ -4,7 +4,7 @@ import { MinusIcon, PlusIcon } from '@heroicons/react/24/outline';
 import clsx from 'clsx';
 import { updateItemQuantity } from 'components/cart/actions';
 import type { CartItem } from 'lib/types';
-import { useActionState } from 'react';
+import { useState } from 'react';
 
 function SubmitButton({ type }: { type: 'plus' | 'minus' }) {
   return (
@@ -38,20 +38,27 @@ export function EditItemQuantityButton({
   type: 'plus' | 'minus';
   optimisticUpdate: any;
 }) {
-  const [message, formAction] = useActionState(updateItemQuantity, null);
-  const payload = {
-    productId: item.productId,
-    quantity: type === 'plus' ? item.quantity + 1 : item.quantity - 1
+  const [message, setMessage] = useState<string | null>(null);
+
+  const handleSubmit = async () => {
+    const payload = {
+      productId: item.id,
+      quantity: type === 'plus' ? item.quantity + 1 : item.quantity - 1
+    };
+    optimisticUpdate(item.id, type);
+    try {
+      const result = await updateItemQuantity(null, payload);
+      setMessage(result || 'Quantity updated successfully');
+    } catch (error) {
+      setMessage('Une erreur est survenue');
+    }
   };
-  const updateItemQuantityAction = formAction.bind(null, payload);
 
   return (
-    <form
-      action={async () => {
-        optimisticUpdate(item.productId, type);
-        updateItemQuantityAction();
-      }}
-    >
+    <form onSubmit={(e) => {
+      e.preventDefault();
+      handleSubmit();
+    }}>
       <SubmitButton type={type} />
       <p aria-live="polite" className="sr-only" role="status">
         {message}

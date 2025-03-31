@@ -3,7 +3,7 @@
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import { removeItem } from 'components/cart/actions';
 import type { CartItem } from 'lib/types';
-import { useActionState } from 'react';
+import { useState } from 'react';
 
 export function DeleteItemButton({
   item,
@@ -12,16 +12,23 @@ export function DeleteItemButton({
   item: CartItem;
   optimisticUpdate: any;
 }) {
-  const [message, formAction] = useActionState(removeItem, null);
-  const removeItemAction = formAction.bind(null, item.productId);
+  const [message, setMessage] = useState<string | null>(null);
+
+  const handleSubmit = async () => {
+    optimisticUpdate(item.id, 'delete');
+    try {
+      const result = await removeItem(null, item.id);
+      setMessage(result || 'Item removed successfully');
+    } catch (error) {
+      setMessage('Une erreur est survenue');
+    }
+  };
 
   return (
-    <form
-      action={async () => {
-        optimisticUpdate(item.productId, 'delete');
-        removeItemAction();
-      }}
-    >
+    <form onSubmit={(e) => {
+      e.preventDefault();
+      handleSubmit();
+    }}>
       <button
         type="submit"
         aria-label="Remove item from cart"
