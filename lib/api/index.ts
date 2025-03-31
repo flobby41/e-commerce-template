@@ -1,139 +1,82 @@
-import type { Cart, Collection, Product } from 'lib/types';
+import { FAKE_STORE_API_URL } from 'lib/constants';
+import type { Product, Cart, CartItem, Collection } from 'lib/types';
 
-const API_BASE_URL = 'https://fakestoreapi.com';
-
-const defaultHeaders = {
-  'Content-Type': 'application/json'
-};
-
-async function fetchApi<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
-  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-    ...options,
-    headers: {
-      ...defaultHeaders,
-      ...options.headers
-    }
-  });
-
-  if (!response.ok) {
-    throw new Error(`API error: ${response.statusText}`);
-  }
-
-  return response.json();
-}
-
-interface FakeStoreProduct {
-  id: number;
-  title: string;
-  description: string;
-  price: number;
-  image: string;
-  category: string;
-  rating: {
-    rate: number;
-    count: number;
-  };
-}
-
-const DEFAULT_IMAGE = 'https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg';
-
-export const api = {
+const api = {
   async getProducts(): Promise<Product[]> {
-    const products = await fetchApi<FakeStoreProduct[]>('/products');
-    return products.map(product => ({
-      id: product.id.toString(),
-      name: product.title,
-      description: product.description,
-      price: product.price,
-      images: [product.image || DEFAULT_IMAGE],
-      category: product.category,
-      stock: product.rating.count
-    }));
+    const res = await fetch(`${FAKE_STORE_API_URL}/products`);
+    if (!res.ok) throw new Error('Failed to fetch products');
+    return res.json();
   },
 
   async getProduct(id: string): Promise<Product> {
-    const product = await fetchApi<FakeStoreProduct>(`/products/${id}`);
-    return {
-      id: product.id.toString(),
-      name: product.title,
-      description: product.description,
-      price: product.price,
-      images: [product.image || DEFAULT_IMAGE],
-      category: product.category,
-      stock: product.rating.count
-    };
+    const res = await fetch(`${FAKE_STORE_API_URL}/products/${id}`);
+    if (!res.ok) throw new Error('Failed to fetch product');
+    return res.json();
+  },
+
+  async getCategories(): Promise<string[]> {
+    const res = await fetch(`${FAKE_STORE_API_URL}/products/categories`);
+    if (!res.ok) throw new Error('Failed to fetch categories');
+    return res.json();
+  },
+
+  async getProductsByCategory(category: string): Promise<Product[]> {
+    const res = await fetch(`${FAKE_STORE_API_URL}/products/category/${category}`);
+    if (!res.ok) throw new Error('Failed to fetch products by category');
+    return res.json();
   },
 
   async getCollections(): Promise<Collection[]> {
-    const categories = await fetchApi<string[]>('/products/categories');
-    const products = await this.getProducts();
-    
-    return categories.map((category, index) => ({
-      id: (index + 1).toString(),
-      name: category,
-      description: `Collection of ${category}`,
-      products: products.filter(product => product.category === category)
-    }));
-  },
-
-  async getCollection(id: string): Promise<Collection> {
-    const products = await fetchApi<FakeStoreProduct[]>(`/products/category/${id}`);
-    return {
-      id,
-      name: products[0]?.category || 'Collection',
-      description: `Collection of ${products[0]?.category || 'products'}`,
-      products: products.map(product => ({
-        id: product.id.toString(),
-        name: product.title,
-        description: product.description,
-        price: product.price,
-        images: [product.image || DEFAULT_IMAGE],
-        category: product.category,
-        stock: product.rating.count
-      }))
-    };
+    const categories = await this.getCategories();
+    const collections: Collection[] = await Promise.all(
+      categories.map(async (category) => {
+        const products = await this.getProductsByCategory(category);
+        return {
+          id: category,
+          title: category.charAt(0).toUpperCase() + category.slice(1),
+          description: `Products in the ${category} category`,
+          products
+        };
+      })
+    );
+    return collections;
   },
 
   async getCart(): Promise<Cart> {
     // For Fake Store API, we'll simulate an empty cart
     return {
       id: '1',
-      items: [],
-      total: 0
+      items: []
     };
   },
 
   async addToCart(productId: string, quantity: number): Promise<Cart> {
     // For Fake Store API, we'll simulate adding to cart
     const product = await this.getProduct(productId);
+    const cartItem: CartItem = {
+      id: productId,
+      title: product.title,
+      price: product.price,
+      quantity
+    };
     return {
       id: '1',
-      items: [{
-        id: product.id,
-        productId: product.id,
-        name: product.name,
-        price: product.price,
-        quantity,
-        image: product.images[0] || DEFAULT_IMAGE
-      }],
-      total: product.price * quantity
+      items: [cartItem]
     };
   },
 
   async updateCartItem(productId: string, quantity: number): Promise<Cart> {
     // For Fake Store API, we'll simulate updating cart
     const product = await this.getProduct(productId);
+    const cartItem: CartItem = {
+      id: productId,
+      title: product.title,
+      price: product.price,
+      quantity
+    };
     return {
       id: '1',
-      items: [{
-        id: product.id,
-        productId: product.id,
-        name: product.name,
-        price: product.price,
-        quantity,
-        image: product.images[0] || DEFAULT_IMAGE
-      }],
-      total: product.price * quantity
+      items: [cartItem]
     };
   },
 
@@ -141,8 +84,7 @@ export const api = {
     // For Fake Store API, we'll simulate removing from cart
     return {
       id: '1',
-      items: [],
-      total: 0
+      items: []
     };
   },
 
@@ -150,8 +92,7 @@ export const api = {
     // For Fake Store API, we'll simulate clearing cart
     return {
       id: '1',
-      items: [],
-      total: 0
+      items: []
     };
   },
 
@@ -159,8 +100,9 @@ export const api = {
     // For Fake Store API, we'll simulate creating an empty cart
     return {
       id: '1',
-      items: [],
-      total: 0
+      items: []
     };
   }
-}; 
+};
+
+export default api; 

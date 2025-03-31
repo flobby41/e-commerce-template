@@ -1,7 +1,7 @@
 import { Carousel } from 'components/carousel';
 import { ThreeItemGrid } from 'components/grid/three-items';
 import Footer from 'components/layout/footer';
-import { api } from 'lib/api';
+import api from 'lib/api';
 import type { Product, Collection } from 'lib/types';
 
 export const metadata = {

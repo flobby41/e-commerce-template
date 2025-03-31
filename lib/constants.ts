@@ -28,4 +28,11 @@ export const TAGS = {
 
 export const HIDDEN_PRODUCT_TAG = 'nextjs-frontend-hidden';
 export const DEFAULT_OPTION = 'Default Title';
-export const SHOPIFY_GRAPHQL_API_ENDPOINT = '/api/2023-01/graphql.json';
+
+export const SITE_NAME = 'Vercel Store Clone';
+
+export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+
+export const FAKE_STORE_API_URL = process.env.NEXT_PUBLIC_FAKE_STORE_API_URL || 'https://fakestoreapi.com';
+
+export const DEFAULT_OG_IMAGE = `${SITE_URL}/og.png`;

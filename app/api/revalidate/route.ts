@@ -1,6 +1,8 @@
-import { revalidate } from 'lib/shopify';
-import { NextRequest, NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
+import { NextRequest } from 'next/server';
 
-export async function POST(req: NextRequest): Promise<NextResponse> {
-  return revalidate(req);
+export async function POST(request: NextRequest) {
+  const path = request.nextUrl.searchParams.get('path') || '/';
+  revalidatePath(path);
+  return Response.json({ revalidated: true, now: Date.now() });
 }

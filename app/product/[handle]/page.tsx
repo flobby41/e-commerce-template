@@ -3,13 +3,11 @@ import { notFound } from 'next/navigation';
 
 import { GridTileImage } from 'components/grid/tile';
 import Footer from 'components/layout/footer';
-import { Gallery } from 'components/product/gallery';
 import { ProductProvider } from 'components/product/product-context';
 import { ProductDescription } from 'components/product/product-description';
 import { HIDDEN_PRODUCT_TAG } from 'lib/constants';
-import { api } from 'lib/api';
+import api from 'lib/api';
 import Link from 'next/link';
-import { Suspense } from 'react';
 
 export async function generateMetadata(props: {
   params: Promise<{ handle: string }>;
@@ -19,11 +17,11 @@ export async function generateMetadata(props: {
 
   if (!product) return notFound();
 
-  const image = product.images[0];
+  const image = product.image;
   const indexable = true;
 
   return {
-    title: product.name,
+    title: product.title,
     description: product.description,
     robots: {
       index: indexable,
@@ -40,7 +38,7 @@ export async function generateMetadata(props: {
               url: image,
               width: 800,
               height: 600,
-              alt: product.name
+              alt: product.title
             }
           ]
         }
@@ -48,23 +46,22 @@ export async function generateMetadata(props: {
   };
 }
 
-export default async function ProductPage(props: { params: Promise<{ handle: string }> }) {
-  const params = await props.params;
+export default async function ProductPage({ params }: { params: { handle: string } }) {
   const product = await api.getProduct(params.handle);
 
-  if (!product) return notFound();
+  if (!product) {
+    return null;
+  }
 
   const productJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Product',
-    name: product.name,
+    name: product.title,
     description: product.description,
-    image: product.images[0],
+    image: product.image,
     offers: {
       '@type': 'Offer',
-      availability: product.stock > 0
-        ? 'https://schema.org/InStock'
-        : 'https://schema.org/OutOfStock',
+      availability: 'https://schema.org/InStock',
       priceCurrency: 'EUR',
       price: product.price
     }
@@ -78,30 +75,22 @@ export default async function ProductPage(props: { params: Promise<{ handle: str
           __html: JSON.stringify(productJsonLd)
         }}
       />
-      <div className="mx-auto max-w-(--breakpoint-2xl) px-4">
-        <div className="flex flex-col rounded-lg border border-neutral-200 bg-white p-8 md:p-12 lg:flex-row lg:gap-8 dark:border-neutral-800 dark:bg-black">
+      <div className="mx-auto max-w-screen-2xl px-4">
+        <div className="flex flex-col rounded-lg border border-neutral-200 bg-white p-8 dark:border-neutral-800 dark:bg-black md:p-12 lg:flex-row lg:gap-8">
           <div className="h-full w-full basis-full lg:basis-4/6">
-            <Suspense
-              fallback={
-                <div className="relative aspect-square h-full max-h-[550px] w-full overflow-hidden" />
-              }
-            >
-              <Gallery
-                images={product.images.map((image: string) => ({
-                  src: image,
-                  altText: product.name
-                }))}
+            <div className="relative aspect-square h-full max-w-[560px] border border-neutral-200 bg-neutral-50 dark:border-neutral-800 dark:bg-neutral-900">
+              <img
+                src={product.image}
+                alt={product.title}
+                className="h-full w-full object-cover"
               />
-            </Suspense>
+            </div>
           </div>
-
           <div className="basis-full lg:basis-2/6">
-            <Suspense fallback={null}>
-              <ProductDescription product={product} />
-            </Suspense>
+            <ProductDescription product={product} />
           </div>
         </div>
-        <RelatedProducts id={product.id} />
+        <RelatedProducts id={product.id.toString()} />
       </div>
       <Footer />
     </ProductProvider>
@@ -112,7 +101,7 @@ async function RelatedProducts({ id }: { id: string }) {
   const products = await api.getProducts();
   const currentProduct = await api.getProduct(id);
   const relatedProducts = products
-    .filter(p => p.id !== id)
+    .filter(p => p.id.toString() !== id)
     .filter(p => p.category === currentProduct.category)
     .slice(0, 4);
 
@@ -133,13 +122,13 @@ async function RelatedProducts({ id }: { id: string }) {
               prefetch={true}
             >
               <GridTileImage
-                alt={product.name}
+                alt={product.title}
                 label={{
-                  title: product.name,
+                  title: product.title,
                   amount: product.price.toString(),
                   currencyCode: 'EUR'
                 }}
-                src={product.images[0] || '/placeholder.jpg'}
+                src={product.image || '/placeholder.jpg'}
                 fill
                 sizes="(min-width: 1024px) 20vw, (min-width: 768px) 25vw, (min-width: 640px) 33vw, (min-width: 475px) 50vw, 100vw"
               />

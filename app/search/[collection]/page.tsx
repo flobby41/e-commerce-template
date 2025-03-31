@@ -1,45 +1,29 @@
-import { getCollection, getCollectionProducts } from 'lib/shopify';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import api from 'lib/api';
+import { ProductGrid } from 'components/layout/product-grid';
 
-import Grid from 'components/grid';
-import ProductGridItems from 'components/layout/product-grid-items';
-import { defaultSort, sorting } from 'lib/constants';
+export const runtime = 'edge';
 
-export async function generateMetadata(props: {
-  params: Promise<{ collection: string }>;
-}): Promise<Metadata> {
-  const params = await props.params;
-  const collection = await getCollection(params.collection);
-
-  if (!collection) return notFound();
-
+export async function generateMetadata({ params }: { params: { collection: string } }): Promise<Metadata> {
   return {
-    title: collection.seo?.title || collection.title,
-    description:
-      collection.seo?.description || collection.description || `${collection.title} products`
+    title: params.collection,
+    description: `Collection of ${params.collection} products`,
   };
 }
 
-export default async function CategoryPage(props: {
-  params: Promise<{ collection: string }>;
-  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
-}) {
-  const searchParams = await props.searchParams;
-  const params = await props.params;
-  const { sort } = searchParams as { [key: string]: string };
-  const { sortKey, reverse } = sorting.find((item) => item.slug === sort) || defaultSort;
-  const products = await getCollectionProducts({ collection: params.collection, sortKey, reverse });
+export default async function CollectionPage({ params }: { params: { collection: string } }) {
+  const products = await api.getProducts();
+  const filteredProducts = products.filter(product => product.category === params.collection);
+
+  if (!filteredProducts.length) {
+    notFound();
+  }
 
   return (
-    <section>
-      {products.length === 0 ? (
-        <p className="py-3 text-lg">{`No products found in this collection`}</p>
-      ) : (
-        <Grid className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-          <ProductGridItems products={products} />
-        </Grid>
-      )}
-    </section>
+    <div className="mx-auto max-w-screen-2xl px-4">
+      <h1 className="text-2xl font-bold">{params.collection}</h1>
+      <ProductGrid products={filteredProducts} />
+    </div>
   );
 }

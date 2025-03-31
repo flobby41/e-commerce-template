@@ -1,7 +1,7 @@
 'use server';
 
 import { TAGS } from 'lib/constants';
-import { api } from 'lib/api';
+import api from 'lib/api';
 import { revalidateTag } from 'next/cache';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
@@ -31,10 +31,10 @@ export async function removeItem(prevState: any, productId: string) {
     }
 
     const cartItem = cart.items.find(
-      (item) => item.productId === productId
+      (item) => item.id === productId
     );
 
-    if (cartItem && cartItem.id) {
+    if (cartItem) {
       await api.removeFromCart(productId);
       revalidateTag(TAGS.cart);
     } else {
@@ -60,11 +60,11 @@ export async function updateItemQuantity(
     }
 
     const cartItem = cart.items.find(
-      (item) => item.productId === payload.productId
+      (item) => item.id === payload.productId
     );
 
-    if (cartItem && cartItem.id) {
-      await api.updateCart([{ id: cartItem.id, quantity: payload.quantity }]);
+    if (cartItem) {
+      await api.updateCartItem(payload.productId, payload.quantity);
       revalidateTag(TAGS.cart);
     } else {
       return 'Item not found in cart';

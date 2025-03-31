@@ -2,7 +2,8 @@
 
 import clsx from 'clsx';
 import { useProduct, useUpdateURL } from 'components/product/product-context';
-import { ProductOption, ProductVariant } from 'lib/shopify/types';
+import { Product } from 'lib/types';
+import { formatPrice } from 'lib/utils';
 
 type Combination = {
   id: string;
@@ -90,4 +91,15 @@ export function VariantSelector({
       </dl>
     </form>
   ));
+}
+
+export default function ProductInfo({ product }: { product: Product }) {
+  return (
+    <div className="flex flex-col gap-4">
+      <h1 className="text-2xl font-bold">{product.title}</h1>
+      <p className="text-sm text-gray-500">{product.category}</p>
+      <p className="text-lg font-medium">{formatPrice(product.price)}</p>
+      <p className="text-sm text-gray-600">{product.description}</p>
+    </div>
+  );
 }

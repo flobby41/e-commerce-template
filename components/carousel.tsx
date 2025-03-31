@@ -22,13 +22,13 @@ export function Carousel({ collections }: CarouselProps) {
           >
             <Link href={`/collection/${collection.id}`} className="relative h-full w-full">
               <GridTileImage
-                alt={collection.name}
+                alt={collection.title}
                 label={{
-                  title: collection.name,
+                  title: collection.title,
                   amount: collection.products.length.toString(),
                   currencyCode: 'EUR'
                 }}
-                src={collection.products[0]?.images[0] || '/placeholder.png'}
+                src={collection.products[0]?.image || '/placeholder.png'}
                 fill
                 sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"
               />

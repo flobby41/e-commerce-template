@@ -1,31 +1,39 @@
-import Grid from 'components/grid';
-import { GridTileImage } from 'components/grid/tile';
-import { Product } from 'lib/shopify/types';
 import Link from 'next/link';
+import Image from 'next/image';
+import { formatPrice } from 'lib/utils';
+
+interface Product {
+  id: number;
+  title: string;
+  price: number;
+  image: string;
+  category: string;
+}
 
 export default function ProductGridItems({ products }: { products: Product[] }) {
   return (
     <>
       {products.map((product) => (
-        <Grid.Item key={product.handle} className="animate-fadeIn">
-          <Link
-            className="relative inline-block h-full w-full"
-            href={`/product/${product.handle}`}
-            prefetch={true}
-          >
-            <GridTileImage
+        <Link
+          key={product.id}
+          href={`/product/${product.id}`}
+          className="group relative flex flex-col overflow-hidden rounded-lg border border-gray-200 bg-white p-4 hover:border-gray-300"
+        >
+          <div className="aspect-square w-full overflow-hidden rounded-lg bg-gray-100">
+            <Image
+              src={product.image}
               alt={product.title}
-              label={{
-                title: product.title,
-                amount: product.priceRange.maxVariantPrice.amount,
-                currencyCode: product.priceRange.maxVariantPrice.currencyCode
-              }}
-              src={product.featuredImage?.url}
-              fill
-              sizes="(min-width: 768px) 33vw, (min-width: 640px) 50vw, 100vw"
+              width={500}
+              height={500}
+              className="h-full w-full object-cover object-center"
             />
-          </Link>
-        </Grid.Item>
+          </div>
+          <div className="mt-4 flex flex-col">
+            <h3 className="text-sm font-medium text-gray-900">{product.title}</h3>
+            <p className="mt-1 text-sm text-gray-500">{product.category}</p>
+            <p className="mt-2 text-sm font-medium text-gray-900">{formatPrice(product.price)}</p>
+          </div>
+        </Link>
       ))}
     </>
   );

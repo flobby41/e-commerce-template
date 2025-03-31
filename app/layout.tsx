@@ -4,7 +4,7 @@ import { Navbar } from 'components/layout/navbar';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { Suspense } from 'react';
-import { api } from 'lib/api';
+import api from 'lib/api';
 import type { Collection } from 'lib/types';
 import { CartProvider } from 'components/cart/cart-context';
 import './globals.css';

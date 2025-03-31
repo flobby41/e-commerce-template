@@ -21,16 +21,16 @@ function ThreeItemGridItem({
         prefetch={true}
       >
         <GridTileImage
-          src={item.images[0] || '/placeholder.png'}
+          src={item.image || '/placeholder.png'}
           fill
           sizes={
             size === 'full' ? '(min-width: 768px) 66vw, 100vw' : '(min-width: 768px) 33vw, 100vw'
           }
           priority={priority}
-          alt={item.name}
+          alt={item.title}
           label={{
             position: size === 'full' ? 'center' : 'bottom',
-            title: item.name,
+            title: item.title,
             amount: item.price.toString(),
             currencyCode: 'EUR'
           }}
