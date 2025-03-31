@@ -5,22 +5,9 @@ import clsx from 'clsx';
 import { useCart } from './cart-context';
 import { Product } from 'lib/types';
 
-function SubmitButton({
-  inStock
-}: {
-  inStock: boolean;
-}) {
+function SubmitButton() {
   const buttonClasses =
     'relative flex w-full items-center justify-center rounded-full bg-blue-600 p-4 tracking-wide text-white';
-  const disabledClasses = 'cursor-not-allowed opacity-60 hover:opacity-60';
-
-  if (!inStock) {
-    return (
-      <button disabled className={clsx(buttonClasses, disabledClasses)}>
-        Rupture de stock
-      </button>
-    );
-  }
 
   return (
     <button
@@ -39,17 +26,14 @@ function SubmitButton({
 
 export function AddToCart({ product }: { product: Product }) {
   const { addCartItem } = useCart();
-  const inStock = product.stock > 0;
 
   return (
     <form
       action={async () => {
-        if (inStock) {
-          addCartItem(product);
-        }
+        addCartItem(product);
       }}
     >
-      <SubmitButton inStock={inStock} />
+      <SubmitButton />
     </form>
   );
 }
