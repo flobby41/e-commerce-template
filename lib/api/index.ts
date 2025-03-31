@@ -71,7 +71,7 @@ export const api = {
     return categories.map((category, index) => ({
       id: (index + 1).toString(),
       name: category,
-      description: `Collection de ${category}`,
+      description: `Collection of ${category}`,
       products: products.filter(product => product.category === category)
     }));
   },
@@ -81,7 +81,7 @@ export const api = {
     return {
       id,
       name: products[0]?.category || 'Collection',
-      description: `Collection de ${products[0]?.category || 'produits'}`,
+      description: `Collection of ${products[0]?.category || 'products'}`,
       products: products.map(product => ({
         id: product.id.toString(),
         name: product.title,
@@ -95,7 +95,7 @@ export const api = {
   },
 
   async getCart(): Promise<Cart> {
-    // Pour Fake Store API, nous allons simuler un panier vide
+    // For Fake Store API, we'll simulate an empty cart
     return {
       id: '1',
       items: [],
@@ -104,7 +104,7 @@ export const api = {
   },
 
   async addToCart(productId: string, quantity: number): Promise<Cart> {
-    // Pour Fake Store API, nous allons simuler l'ajout au panier
+    // For Fake Store API, we'll simulate adding to cart
     const product = await this.getProduct(productId);
     return {
       id: '1',
@@ -121,7 +121,7 @@ export const api = {
   },
 
   async updateCartItem(productId: string, quantity: number): Promise<Cart> {
-    // Pour Fake Store API, nous allons simuler la mise à jour du panier
+    // For Fake Store API, we'll simulate updating cart
     const product = await this.getProduct(productId);
     return {
       id: '1',
@@ -138,7 +138,7 @@ export const api = {
   },
 
   async removeFromCart(productId: string): Promise<Cart> {
-    // Pour Fake Store API, nous allons simuler la suppression du panier
+    // For Fake Store API, we'll simulate removing from cart
     return {
       id: '1',
       items: [],
@@ -147,7 +147,7 @@ export const api = {
   },
 
   async clearCart(): Promise<Cart> {
-    // Pour Fake Store API, nous allons simuler la suppression du panier
+    // For Fake Store API, we'll simulate clearing cart
     return {
       id: '1',
       items: [],
@@ -156,7 +156,7 @@ export const api = {
   },
 
   async createCart(): Promise<Cart> {
-    // Pour Fake Store API, nous allons simuler la création d'un panier vide
+    // For Fake Store API, we'll simulate creating an empty cart
     return {
       id: '1',
       items: [],

@@ -84,7 +84,7 @@ export default function CartModal() {
                               onClick={closeCart}
                             >
                               <span className="absolute -inset-0.5" />
-                              <span className="sr-only">Fermer le panier</span>
+                              <span className="sr-only">Close cart</span>
                               <XMarkIcon className="h-6 w-6" aria-hidden="true" />
                             </button>
                           </div>
