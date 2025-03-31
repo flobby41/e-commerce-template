@@ -1,11 +1,11 @@
-import { ImageResponse } from 'next/server';
+import { ImageResponse } from 'next/og';
 import { DEFAULT_OG_IMAGE } from 'lib/constants';
 
 export const runtime = 'edge';
 export const alt = 'Vercel Store Clone';
 export const size = 1200;
 
-export default async function Image({ params }: { params: { page: string } }) {
+export default async function Image({ params }: { params: { page: string } }): Promise<ImageResponse> {
   return new ImageResponse(
     (
       <div
@@ -14,24 +14,20 @@ export default async function Image({ params }: { params: { page: string } }) {
           width: '100%',
           height: '100%',
           display: 'flex',
+          flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          flexDirection: 'column',
+          padding: '40px',
         }}
       >
-        <img src={DEFAULT_OG_IMAGE} alt={alt} width={size} height={size} />
         <div
           style={{
-            position: 'absolute',
-            bottom: 0,
-            left: 0,
-            right: 0,
-            padding: '20px',
-            background: 'rgba(0,0,0,0.7)',
-            color: 'white',
+            fontSize: 60,
+            fontWeight: 700,
+            color: 'black',
             textAlign: 'center',
-            fontSize: '48px',
-            fontWeight: 'bold',
+            maxWidth: '800px',
+            lineHeight: 1,
           }}
         >
           {params.page}
@@ -39,8 +35,8 @@ export default async function Image({ params }: { params: { page: string } }) {
       </div>
     ),
     {
-      width: size,
-      height: size,
+      width: 1200,
+      height: 630,
     }
   );
 }
