@@ -96,8 +96,8 @@ export default function CartModal() {
                                 <li key={item.id} className="flex py-6">
                                   <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                                     <Image
-                                      src={item.image}
-                                      alt={item.name}
+                                      src="/placeholder.png"
+                                      alt={item.title}
                                       width={96}
                                       height={96}
                                       className="h-full w-full object-cover object-center"
@@ -108,7 +108,7 @@ export default function CartModal() {
                                     <div>
                                       <div className="flex justify-between text-base font-medium text-gray-900">
                                         <h3>
-                                          <Link href={`/product/${item.productId}`}>{item.name}</Link>
+                                          <Link href={`/product/${item.id}`}>{item.title}</Link>
                                         </h3>
                                         <p className="ml-4">
                                           <Price amount={String(item.price * item.quantity)} currencyCode="EUR" />

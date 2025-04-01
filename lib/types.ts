@@ -10,6 +10,7 @@ export interface Product {
 export interface Cart {
   id: string;
   items: CartItem[];
+  total: number;
 }
 
 export interface CartItem {
