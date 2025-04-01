@@ -2,7 +2,7 @@
 
 import clsx from 'clsx';
 import { useProduct, useUpdateURL } from 'components/product/product-context';
-import { Product } from 'lib/types';
+import { Product, ProductOption, ProductVariant } from 'lib/types';
 import { formatPrice } from 'lib/utils';
 
 type Combination = {
