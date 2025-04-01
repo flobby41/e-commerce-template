@@ -74,7 +74,8 @@ function updateCartTotals(items: CartItem[]): { total: number } {
 function createEmptyCart(): Cart {
   return {
     id: Math.random().toString(36).substr(2, 9),
-    items: []
+    items: [],
+    total: 0
   };
 }
 
@@ -97,7 +98,8 @@ function cartReducer(state: Cart | undefined, action: CartAction): Cart {
 
       return {
         ...state,
-        items: updatedItems
+        items: updatedItems,
+        ...updateCartTotals(updatedItems)
       };
     }
 
@@ -115,7 +117,8 @@ function cartReducer(state: Cart | undefined, action: CartAction): Cart {
 
       return {
         ...state,
-        items: updatedItems
+        items: updatedItems,
+        ...updateCartTotals(updatedItems)
       };
     }
   }
