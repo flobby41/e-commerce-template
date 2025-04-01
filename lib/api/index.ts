@@ -46,7 +46,8 @@ const api = {
     // For Fake Store API, we'll simulate an empty cart
     return {
       id: '1',
-      items: []
+      items: [],
+      total: 0
     };
   },
 
@@ -61,7 +62,8 @@ const api = {
     };
     return {
       id: '1',
-      items: [cartItem]
+      items: [cartItem],
+      total: product.price * quantity
     };
   },
 
@@ -76,7 +78,8 @@ const api = {
     };
     return {
       id: '1',
-      items: [cartItem]
+      items: [cartItem],
+      total: product.price * quantity
     };
   },
 
@@ -84,7 +87,8 @@ const api = {
     // For Fake Store API, we'll simulate removing from cart
     return {
       id: '1',
-      items: []
+      items: [],
+      total: 0
     };
   },
 
@@ -92,7 +96,8 @@ const api = {
     // For Fake Store API, we'll simulate clearing cart
     return {
       id: '1',
-      items: []
+      items: [],
+      total: 0
     };
   },
 
@@ -100,7 +105,8 @@ const api = {
     // For Fake Store API, we'll simulate creating an empty cart
     return {
       id: '1',
-      items: []
+      items: [],
+      total: 0
     };
   }
 };
