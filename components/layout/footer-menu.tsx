@@ -25,7 +25,7 @@ export function FooterMenuItem({ collection }: { collection: Collection }) {
           }
         )}
       >
-        {collection.name}
+        {collection.title}
       </Link>
     </li>
   );
