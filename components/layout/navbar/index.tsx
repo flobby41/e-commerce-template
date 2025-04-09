@@ -15,25 +15,43 @@ interface NavbarProps {
 export function Navbar({ collections }: NavbarProps) {
   return (
     <nav className="relative flex items-center justify-between p-4 lg:px-6">
-      <div className="block flex-none md:hidden">
-        <Suspense fallback={null}>
-          <MobileMenu collections={collections} />
-        </Suspense>
-      </div>
-      <div className="flex w-full items-center">
-        <div className="flex w-full md:w-1/3">
-          <Link
-            href="/"
-            prefetch={true}
-            className="mr-2 flex w-full items-center justify-center md:w-auto lg:mr-6"
-          >
-            <LogoSquare />
-            <div className="ml-2 flex-none text-sm font-medium uppercase md:hidden lg:block">
+      {/* Mobile Layout */}
+      <div className="flex w-full items-center justify-between md:hidden">
+        <div className="flex-none">
+          <Suspense fallback={null}>
+            <MobileMenu collections={collections} />
+          </Suspense>
+        </div>
+        <div className="flex items-center justify-center">
+          <Link href="/" prefetch={true} className="flex items-center">
+            <LogoSquare size="sm" />
+            <div className="ml-2 text-sm font-medium uppercase">
               {SITE_NAME}
             </div>
           </Link>
+        </div>
+        <div className="flex-none">
+          <CartModal />
+        </div>
+      </div>
+
+      {/* Desktop Layout */}
+      <div className="hidden w-full items-center justify-between md:flex">
+        <div className="flex items-center space-x-4 md:w-1/4">
+          <Link
+            href="/"
+            prefetch={true}
+            className="flex items-center"
+          >
+            <LogoSquare size="sm" />
+            <div className="ml-2 hidden text-xs font-medium uppercase lg:block">
+              {SITE_NAME}
+            </div>
+          </Link>
+        </div>
+        <div className="flex-1 md:w-2/4">
           {collections.length ? (
-            <ul className="hidden gap-6 text-sm md:flex md:items-center">
+            <ul className="gap-8 text-sm md:flex md:items-center md:justify-center">
               {collections.map((collection) => (
                 <li key={collection.id}>
                   <Link
@@ -48,12 +66,12 @@ export function Navbar({ collections }: NavbarProps) {
             </ul>
           ) : null}
         </div>
-        <div className="hidden justify-center md:flex md:w-1/3">
-          <Suspense fallback={<SearchSkeleton />}>
-            <Search />
-          </Suspense>
-        </div>
-        <div className="flex justify-end md:w-1/3">
+        <div className="flex items-center justify-end space-x-4 md:w-1/4">
+          <div className="md:block">
+            <Suspense fallback={<SearchSkeleton />}>
+              <Search />
+            </Suspense>
+          </div>
           <CartModal />
         </div>
       </div>
